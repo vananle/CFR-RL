@@ -113,6 +113,8 @@ class Traffic(object):
         self.tm_cnt = tms_shape[0]
         self.traffic_matrices = np.reshape(traffic_matrices, newshape=(self.tm_cnt, num_nodes, num_nodes))
         self.traffic_file = splitted_data_fname
+        print('Traffic matrices dims: [%d, %d, %d]\n' % (self.traffic_matrices[0],
+                                                         self.traffic_matrices[1], self.traffic_matrices[2]))
 
     @staticmethod
     def remove_outliers(data):
