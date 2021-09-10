@@ -40,7 +40,7 @@ class Game(object):
         self.links = [e for e in range(self.num_links)]
         self.lp_links = [e for e in self.link_sd_to_idx]
         self.pair_links = [(pr, e[0], e[1]) for pr in self.lp_pairs for e in self.lp_links]
-
+        self.timeout = config.timeout
         self.load_multiplier = {}
 
     def generate_inputs(self, normalization=True):
@@ -181,7 +181,7 @@ class Game(object):
 
         model += r + OBJ_EPSILON * lpSum([link_load[e] for e in self.links])
 
-        model.solve(solver=GLPK(msg=False))
+        model.solve(solver=GLPK(msg=False, timeLimit=self.timeout))
         assert LpStatus[model.status] == 'Optimal'
 
         obj_r = r.value()
@@ -263,7 +263,7 @@ class Game(object):
 
         model += r + OBJ_EPSILON * lpSum([link_load[ei] for ei in self.links])
 
-        model.solve(solver=GLPK(msg=False))
+        model.solve(solver=GLPK(msg=False, timeLimit=self.timeout))
         assert LpStatus[model.status] == 'Optimal'
 
         obj_r = r.value()
@@ -343,7 +343,7 @@ class Game(object):
 
         model += lpSum(f[ei] for ei in self.links)
 
-        model.solve(solver=GLPK(msg=False))
+        model.solve(solver=GLPK(msg=False, timeLimit=self.timeout))
         assert LpStatus[model.status] == 'Optimal'
 
         solution = {}

@@ -36,7 +36,7 @@ class Config(NetworkConfig):
     topology_file = dataset
     traffic_file = 'train'
     test_traffic_file = 'test'
-
+    timeout = 1
     tm_history = 1
 
     max_moves = 10  # percentage
