@@ -22,32 +22,34 @@ class NetworkConfig(object):
 
 
 class Config(NetworkConfig):
-  version = 'TE_v2'
+    version = 'TE_v2'
 
-  project_name = 'CFR-RL'
+    project_name = 'CFR-RL'
 
-  method = 'actor_critic'
-  # method = 'pure_policy'
+    method = 'actor_critic'
+    # method = 'pure_policy'
 
-  model_type = 'Conv'
+    model_type = 'Conv'
 
-  topology_file = 'Abilene'
-  traffic_file = 'TM'
-  test_traffic_file = 'TM2'
+    data_dir = '../data_cfr/'
+    dataset = 'abilene_tm'
+    topology_file = dataset
+    traffic_file = 'train'
+    test_traffic_file = 'test'
 
-  tm_history = 1
+    tm_history = 1
 
-  max_moves = 10  # percentage
+    max_moves = 10  # percentage
 
-  # For pure policy
-  baseline = 'avg'  # avg, best
+    # For pure policy
+    baseline = 'avg'  # avg, best
 
 
 def get_config(FLAGS):
-  config = Config
+    config = Config
 
-  for k, v in FLAGS.__flags.items():
-    if hasattr(config, k):
-      setattr(config, k, v.value)
+    for k, v in FLAGS.__flags.items():
+        if hasattr(config, k):
+            setattr(config, k, v.value)
 
-  return config
+    return config

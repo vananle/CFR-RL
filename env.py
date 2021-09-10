@@ -3,7 +3,7 @@ from __future__ import division
 from __future__ import print_function
 
 import os
-
+from scipy.io import loadmat, savemat
 import networkx as nx
 import numpy as np
 
@@ -12,7 +12,7 @@ import numpy as np
 
 class Topology(object):
     def __init__(self, config, data_dir='./data/'):
-        self.topology_file = data_dir + config.topology_file
+        self.topology_file = data_dir + 'topo/' + config.topology_file
         self.shortest_paths_file = self.topology_file + '_shortest_paths'
         self.DG = nx.DiGraph()
 
@@ -23,8 +23,9 @@ class Topology(object):
         print('[*] Loading topology...', self.topology_file)
         f = open(self.topology_file, 'r')
         header = f.readline()
-        self.num_nodes = int(header[header.find(':') + 2:header.find('\t')])
-        self.num_links = int(header[header.find(':', 10) + 2:])
+        header = header.split('\t')
+        self.num_nodes = int(header[1])
+        self.num_links = int(header[3])
         f.readline()
         self.link_idx_to_sd = {}
         self.link_sd_to_idx = {}
@@ -94,13 +95,104 @@ class Topology(object):
 
 
 class Traffic(object):
-    def __init__(self, config, num_nodes, data_dir='./data/', is_training=False):
-        if is_training:
-            self.traffic_file = data_dir + config.topology_file + config.traffic_file
-        else:
-            self.traffic_file = data_dir + config.topology_file + config.test_traffic_file
+    def __init__(self, config, num_nodes, data_dir='../data/', is_training=False):
         self.num_nodes = num_nodes
-        self.load_traffic(config)
+
+        splitted_path = os.path.join(data_dir, 'splitted_data/')
+        if not os.path.exists(splitted_path):
+            self.split_data_from_mat(data_dir=data_dir, dataset=config.dataset)
+
+        splitted_data_fname = splitted_path + config.dataset + '.mat'
+        data = loadmat(splitted_data_fname)
+        if is_training:
+            traffic_matrices = data['train']
+        else:
+            traffic_matrices = data['test']
+
+        tms_shape = traffic_matrices.shape
+        self.tm_cnt = tms_shape[0]
+        self.traffic_matrices = np.reshape(traffic_matrices, newshape=(self.tm_cnt, num_nodes, num_nodes))
+        self.traffic_file = splitted_data_fname
+
+    @staticmethod
+    def remove_outliers(data):
+        q25, q75 = np.percentile(data, 25, axis=0), np.percentile(data, 75, axis=0)
+        iqr = q75 - q25
+        cut_off = iqr * 3
+        lower, upper = q25 - cut_off, q75 + cut_off
+        for i in range(data.shape[1]):
+            flow = data[:, i]
+            flow[flow > upper[i]] = upper[i]
+            # flow[flow < lower[i]] = lower[i]
+            data[:, i] = flow
+
+        return data
+
+    def train_test_split(self, X, dataset):
+        if 'abilene' in dataset:
+            train_size = 4 * 7 * 288  # 4 weeks
+            val_size = 288 * 7  # 1 week
+            test_size = 288 * 7 * 2  # 2 weeks
+
+        elif 'geant' in dataset:
+            train_size = 96 * 7 * 4 * 2  # 2 months
+            val_size = 96 * 7 * 2  # 2 weeks
+            test_size = 96 * 7 * 4  # 1 month
+
+        elif 'brain' in dataset:
+            train_size = 1440 * 3  # 3 days
+            val_size = 1440  # 1 day
+            test_size = 1440 * 2  # 2 days
+        elif 'uninett' in dataset:  # granularity: 5 min
+            train_size = 4 * 7 * 288  # 4 weeks
+            val_size = 288 * 7  # 1 week
+            test_size = 288 * 7 * 2  # 2 weeks
+        elif 'renater_tm' in dataset:  # granularity: 5 min
+            train_size = 4 * 7 * 288  # 4 weeks
+            val_size = 288 * 7  # 1 week
+            test_size = 288 * 7 * 2  # 2 weeks
+        else:
+            raise NotImplementedError
+
+        X_train = X[:train_size]
+
+        X_val = X[train_size:val_size + train_size]
+
+        X_test = X[val_size + train_size: val_size + train_size + test_size]
+
+        if 'abilene' in dataset or 'geant' in dataset or 'brain' in dataset:
+            X_train = self.remove_outliers(X_train)
+            X_val = self.remove_outliers(X_val)
+
+        print('Raw data:')
+        print('X_train: ', X_train.shape)
+        print('X_val: ', X_val.shape)
+        print('X_test: ', X_test.shape)
+
+        return X_train, X_val, X_test
+
+    def split_data_from_mat(self, data_dir, dataset):
+        X = self.load_raw(data_dir=data_dir, dataset=dataset)
+        train, val, test = self.train_test_split(X, dataset)
+        savepath = os.path.join(data_dir, 'splitted_data/')
+        if not os.path.exists(savepath):
+            os.makedirs(savepath)
+
+        savepathfile = os.path.join(savepath, '{}.mat'.format(dataset))
+        savemat(savepathfile, {'train': train,
+                               'val': val,
+                               'test:': test})
+
+    @staticmethod
+    def load_raw(data_dir, dataset):
+        # load raw data
+        data_path = os.path.join(data_dir, 'data/{}.mat'.format(dataset))
+        X = loadmat(data_path)['X']
+        X = np.reshape(X, newshape=(X.shape[0], -1))
+        return X
+
+    def load_traffic_from_mat(self, config):
+        pass
 
     def load_traffic(self, config):
         assert os.path.exists(self.traffic_file)
@@ -130,7 +222,7 @@ class Traffic(object):
 
 class Environment(object):
     def __init__(self, config, is_training=False):
-        self.data_dir = './data/'
+        self.data_dir = config.data_dir
         self.topology = Topology(config, self.data_dir)
         self.traffic = Traffic(config, self.topology.num_nodes, self.data_dir, is_training=is_training)
         self.traffic_matrices = self.traffic.traffic_matrices * 100 * 8 / 300 / 1000  # kbps
