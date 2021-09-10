@@ -470,5 +470,4 @@ class CFRRL_Game(Game):
 
         # print(line[:-2])
 
-        print(mlu)
         return mlu
