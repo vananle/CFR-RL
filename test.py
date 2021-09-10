@@ -1,19 +1,19 @@
 from __future__ import print_function
 
-import os
 import numpy as np
+import tensorflow as tf
 from absl import app
 from absl import flags
 
-import tensorflow as tf
+from config import get_config
 from env import Environment
 from game import CFRRL_Game
 from model import Network
-from config import get_config
 
 FLAGS = flags.FLAGS
 flags.DEFINE_string('ckpt', '', 'apply a specific checkpoint')
 flags.DEFINE_boolean('eval_delay', False, 'evaluate delay or not')
+
 
 def sim(config, network, game):
     for tm_idx in game.tm_indexes:
@@ -24,10 +24,11 @@ def sim(config, network, game):
             policy = network.policy_predict(np.expand_dims(state, 0)).numpy()[0]
         actions = policy.argsort()[-game.max_moves:]
 
-        game.evaluate(tm_idx, actions, eval_delay=FLAGS.eval_delay) 
+        game.evaluate(tm_idx, actions, eval_delay=FLAGS.eval_delay)
+
 
 def main(_):
-    #Using cpu for testing
+    # Using cpu for testing
     tf.config.experimental.set_visible_devices([], 'GPU')
     tf.get_logger().setLevel('INFO')
 
@@ -41,8 +42,8 @@ def main(_):
         learning_rate = network.lr_schedule(network.actor_optimizer.iterations.numpy()).numpy()
     elif config.method == 'pure_policy':
         learning_rate = network.lr_schedule(network.optimizer.iterations.numpy()).numpy()
-    print('\nstep %d, learning rate: %f\n'% (step, learning_rate))
-  
+    print('\nstep %d, learning rate: %f\n' % (step, learning_rate))
+
     sim(config, network, game)
 
 

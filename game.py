@@ -396,6 +396,8 @@ class CFRRL_Game(Game):
     def reward(self, tm_idx, actions):
         mlu, _ = self.optimal_routing_mlu_critical_pairs(tm_idx, actions)
 
+        if mlu <= 0:
+            mlu = 10e-6
         reward = 1 / mlu
 
         return reward
