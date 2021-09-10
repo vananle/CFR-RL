@@ -468,4 +468,7 @@ class CFRRL_Game(Game):
             assert tm_idx in self.load_multiplier, (tm_idx)
             line += str(self.load_multiplier[tm_idx]) + ', '
 
-        print(line[:-2])
+        # print(line[:-2])
+
+        print(mlu)
+        return mlu

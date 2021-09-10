@@ -16,6 +16,7 @@ flags.DEFINE_boolean('eval_delay', False, 'evaluate delay or not')
 
 
 def sim(config, network, game):
+    mlu = []
     for tm_idx in game.tm_indexes:
         state = game.get_state(tm_idx)
         if config.method == 'actor_critic':
@@ -24,7 +25,11 @@ def sim(config, network, game):
             policy = network.policy_predict(np.expand_dims(state, 0)).numpy()[0]
         actions = policy.argsort()[-game.max_moves:]
 
-        game.evaluate(tm_idx, actions, eval_delay=FLAGS.eval_delay)
+        u = game.evaluate(tm_idx, actions, eval_delay=FLAGS.eval_delay)
+        mlu.append(u)
+    mlu = np.asarray(mlu)
+    print('----------------------------------- OVERALL RESULTS -------------------------------------------------------')
+    print('Avg MLU: ', np.mean(mlu))
 
 
 def main(_):
