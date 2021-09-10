@@ -103,6 +103,7 @@ class Traffic(object):
             self.split_data_from_mat(data_dir=data_dir, dataset=config.dataset)
 
         splitted_data_fname = splitted_path + config.dataset + '.mat'
+        print('Load data from ', splitted_data_fname)
         data = loadmat(splitted_data_fname)
         if is_training:
             traffic_matrices = data['train']
