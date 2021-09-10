@@ -45,13 +45,16 @@ class Network():
         
         if master:
             if config.method == 'actor_critic':
-                self.ckpt = tf.train.Checkpoint(step=tf.Variable(1), actor_optimizer=self.actor_optimizer, critic_optimizer=self.critic_optimizer, model=self.model)
+                self.ckpt = tf.train.Checkpoint(step=tf.Variable(1), actor_optimizer=self.actor_optimizer,
+                                                critic_optimizer=self.critic_optimizer, model=self.model)
             elif config.method == 'pure_policy':
                 self.ckpt = tf.train.Checkpoint(step=tf.Variable(1), optimizer=self.optimizer, model=self.model)
-            self.ckpt_dir = './tf_ckpts/'+self.model_name
+            if not os.path.exists('..logs/cfr/tf_ckpts/'):
+                os.makedirs('..logs/cfr/tf_ckpts/')
+            self.ckpt_dir = '..logs/cfr/tf_ckpts/' + self.model_name
             self.manager = tf.train.CheckpointManager(self.ckpt, self.ckpt_dir, max_to_keep=config.max_to_keep)
             self.writer = tf.compat.v2.summary.create_file_writer('./logs/%s' % self.model_name)
-            #self.save_hyperparams(config)
+            # self.save_hyperparams(config)
             self.model.summary()
 
     def create_actor_critic_model(self, config):
