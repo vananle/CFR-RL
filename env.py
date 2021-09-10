@@ -229,7 +229,8 @@ class Environment(object):
         self.data_dir = config.data_dir
         self.topology = Topology(config, self.data_dir)
         self.traffic = Traffic(config, self.topology.num_nodes, self.data_dir, is_training=is_training)
-        self.traffic_matrices = self.traffic.traffic_matrices * 100 * 8 / 300 / 1000  # kbps
+        self.traffic_matrices = self.traffic.traffic_matrices  # kbps
+        # self.traffic_matrices = self.traffic.traffic_matrices * 100 * 8 / 300 / 1000  # kbps
         self.tm_cnt = self.traffic.tm_cnt
         self.traffic_file = self.traffic.traffic_file
         self.num_pairs = self.topology.num_pairs
