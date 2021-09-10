@@ -110,7 +110,7 @@ class Traffic(object):
         else:
             traffic_matrices = data['test:']
 
-        savemat(splitted_data_fname, {'train': data['train'], 'test': data['test']})
+        savemat(splitted_data_fname, {'train': data['train'], 'test': data['test:']})
 
         tms_shape = traffic_matrices.shape
         self.tm_cnt = tms_shape[0]
