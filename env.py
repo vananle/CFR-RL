@@ -108,7 +108,9 @@ class Traffic(object):
         if is_training:
             traffic_matrices = data['train']
         else:
-            traffic_matrices = data['test']
+            traffic_matrices = data['test:']
+
+        savemat(splitted_data_fname, {'train': data['train'], 'test': data['test']})
 
         tms_shape = traffic_matrices.shape
         self.tm_cnt = tms_shape[0]
@@ -185,7 +187,7 @@ class Traffic(object):
         savepathfile = os.path.join(savepath, '{}.mat'.format(dataset))
         savemat(savepathfile, {'train': train,
                                'val': val,
-                               'test:': test})
+                               'test': test})
 
     @staticmethod
     def load_raw(data_dir, dataset):
