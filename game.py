@@ -442,7 +442,7 @@ class CFRRL_Game(Game):
         optimal_mlu, optimal_mlu_delay = self.eval_optimal_routing_mlu(tm_idx, solution, eval_delay=eval_delay)
 
         norm_mlu = optimal_mlu / mlu
-        line = str(tm_idx) + ', ' + str(norm_mlu) + ', ' + str(mlu) + ', '
+        line = str(tm_idx) + ', ' + str(optimal_mlu) + ', ' + str(norm_mlu) + ', ' + str(mlu) + ', '
 
         norm_crit_mlu = optimal_mlu / crit_mlu
         line += str(norm_crit_mlu) + ', ' + str(crit_mlu) + ', '
