@@ -21,7 +21,7 @@ def sim(config, network, game):
     for tm_idx in game.tm_indexes:
         if tm_idx % 10 == 0:
             print('t       opt_mlu             norm_mlu              mlu          norm_crit_mlu         crit_mlu     '
-                  '        norm_topk_mlu           topk_mlu            norm_ecmp_mlu                 ecmp_mlu')
+                  '       norm_topk_mlu          topk_mlu         norm_ecmp_mlu           ecmp_mlu')
         state = game.get_state(tm_idx)
         if config.method == 'actor_critic':
             policy = network.actor_predict(np.expand_dims(state, 0)).numpy()[0]
