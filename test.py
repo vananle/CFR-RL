@@ -47,7 +47,7 @@ def sim(config, network, game):
     crit_pairs = []
 
     for tm_idx in game.tm_indexes:
-        if tm_idx % 10 == 0:
+        if tm_idx % 10 == 0 and tm_idx != 0:
             print('t       opt_mlu             norm_mlu              mlu          norm_crit_mlu         crit_mlu     '
                   '       norm_topk_mlu          topk_mlu         norm_ecmp_mlu           ecmp_mlu')
             break
