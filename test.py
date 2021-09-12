@@ -16,7 +16,7 @@ flags.DEFINE_boolean('eval_delay', False, 'evaluate delay or not')
 
 
 def sim(config, network, game):
-    mlu = []
+    mlus = []
 
     for tm_idx in game.tm_indexes:
         if tm_idx % 10 == 0:
@@ -30,10 +30,10 @@ def sim(config, network, game):
         actions = policy.argsort()[-game.max_moves:]
 
         u = game.evaluate(tm_idx, actions, eval_delay=FLAGS.eval_delay)
-        mlu.append(u)
-    mlu = np.asarray(mlu)
+        mlus.append(u)
+    mlus = np.asarray(mlus)
     print('----------------------------------- OVERALL RESULTS -------------------------------------------------------')
-    print('Avg MLU: ', np.mean(mlu))
+    print('MLU   Critical MLU   Topk MLU      Optimal MLU\n', np.mean(mlus, axis=0))
 
 
 def main(_):
