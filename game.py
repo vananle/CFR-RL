@@ -423,23 +423,32 @@ class CFRRL_Game(Game):
         else:
             self.baseline[tm_idx] = (reward, 1)
 
+    # def dic2array(self, solution):
+    #     n_crit_pairs = int(len(solution)/ self.num_links)
+    #     asolution = np.zeros(shape=(n_crit_pairs, self.num_links, self.num_links), dtype=np.float_)
+    #     for k, e1, e2, v in solution:
+    #         asolution[k, e1, e2] = v
+    #     return asolution
+
     def evaluate(self, tm_idx, actions=None, ecmp=True, eval_delay=False):
         if ecmp:
             ecmp_mlu, ecmp_delay = self.eval_ecmp_traffic_distribution(tm_idx, eval_delay=eval_delay)
 
         _, solution = self.optimal_routing_mlu_critical_pairs(tm_idx, actions)
         mlu, delay = self.eval_critical_flow_and_ecmp(tm_idx, actions, solution, eval_delay=eval_delay)
+        # solution = self.dic2array(solution)
 
         crit_topk = self.get_critical_topK_flows(tm_idx)
-        _, solution = self.optimal_routing_mlu_critical_pairs(tm_idx, crit_topk)
-        crit_mlu, crit_delay = self.eval_critical_flow_and_ecmp(tm_idx, crit_topk, solution, eval_delay=eval_delay)
+        _, crit_topk_solution = self.optimal_routing_mlu_critical_pairs(tm_idx, crit_topk)
+        crit_mlu, crit_delay = self.eval_critical_flow_and_ecmp(tm_idx, crit_topk, crit_topk_solution,
+                                                                eval_delay=eval_delay)
 
         topk = self.get_topK_flows(tm_idx, self.lp_pairs)
-        _, solution = self.optimal_routing_mlu_critical_pairs(tm_idx, topk)
-        topk_mlu, topk_delay = self.eval_critical_flow_and_ecmp(tm_idx, topk, solution, eval_delay=eval_delay)
+        _, topk_solution = self.optimal_routing_mlu_critical_pairs(tm_idx, topk)
+        topk_mlu, topk_delay = self.eval_critical_flow_and_ecmp(tm_idx, topk, topk_solution, eval_delay=eval_delay)
 
-        _, solution = self.optimal_routing_mlu(tm_idx)
-        optimal_mlu, optimal_mlu_delay = self.eval_optimal_routing_mlu(tm_idx, solution, eval_delay=eval_delay)
+        _, optimal_solution = self.optimal_routing_mlu(tm_idx)
+        optimal_mlu, optimal_mlu_delay = self.eval_optimal_routing_mlu(tm_idx, optimal_solution, eval_delay=eval_delay)
 
         norm_mlu = optimal_mlu / mlu
         line = str(tm_idx) + ', ' + str(optimal_mlu) + ', ' + str(norm_mlu) + ', ' + str(mlu) + ', '
@@ -470,4 +479,5 @@ class CFRRL_Game(Game):
 
         print(line[:-2])
 
-        return [mlu, crit_mlu, topk_mlu, optimal_mlu]
+        return [mlu, crit_mlu, topk_mlu, optimal_mlu], \
+               [solution, crit_topk_solution, topk_solution, optimal_solution], actions
