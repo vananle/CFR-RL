@@ -470,4 +470,4 @@ class CFRRL_Game(Game):
 
         print(line[:-2])
 
-        return mlu, crit_mlu, topk_mlu, optimal_mlu
+        return [mlu, crit_mlu, topk_mlu, optimal_mlu]
