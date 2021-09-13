@@ -230,7 +230,7 @@ class Game(object):
         model = LpProblem(name="routing")
 
         pair_links = [(pr, e[0], e[1]) for pr in pairs for e in self.lp_links]
-        ratio = LpVariable.dicts(name="ratio", indexs=pair_links, lowBound=0, upBound=1, cat='Integer')
+        ratio = LpVariable.dicts(name="ratio", indexs=pair_links, cat='Binary')
 
         link_load = LpVariable.dicts(name="link_load", indexs=self.links)
 
@@ -309,7 +309,7 @@ class Game(object):
 
         model = LpProblem(name="routing")
 
-        ratio = LpVariable.dicts(name="ratio", indexs=self.pair_links, lowBound=0, upBound=1, cat='Integer')
+        ratio = LpVariable.dicts(name="ratio", indexs=self.pair_links, cat='Binary')
 
         link_load = LpVariable.dicts(name="link_load", indexs=self.links)
 
