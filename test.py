@@ -45,7 +45,6 @@ def sim(config, network, game):
     mlus = []
     solutions = []
     crit_pairs = []
-    p_optimal_solution = None
     for tm_idx in game.tm_indexes:
         if tm_idx % 10 == 0 and tm_idx != 0:
             print('t       opt_mlu             norm_mlu              mlu          norm_crit_mlu         crit_mlu     '
@@ -57,12 +56,10 @@ def sim(config, network, game):
             policy = network.policy_predict(np.expand_dims(state, 0)).numpy()[0]
         actions = policy.argsort()[-game.max_moves:]
 
-        u, solution, crit_pair = game.evaluate(tm_idx, actions, eval_delay=FLAGS.eval_delay,
-                                               p_optimal_solution=p_optimal_solution)
+        u, solution, crit_pair = game.evaluate(tm_idx, actions, eval_delay=FLAGS.eval_delay)
         mlus.append(u)
         solutions.append(solution)
         crit_pairs.append(crit_pair)
-        p_optimal_solution = solution[-1]
 
     mlus = np.asarray(mlus)
     rc = count_rc_cfr_rl(solutions, crit_pairs=crit_pairs, lp_links=game.lp_links)

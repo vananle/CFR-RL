@@ -144,7 +144,7 @@ class Game(object):
 
         return eval_max_utilization, delay
 
-    def optimal_routing_mlu(self, tm_idx, p_solution=None):
+    def optimal_routing_mlu(self, tm_idx):
         tm = self.traffic_matrices[tm_idx]
         demands = {}
         for i in range(self.num_pairs):
@@ -192,9 +192,6 @@ class Game(object):
         solution = {}
         for k in ratio:
             solution[k] = ratio[k].value()
-
-        if LpStatus[model.status] != 'Optimal':
-            solution = p_solution
 
         return obj_r, solution
 
@@ -272,8 +269,6 @@ class Game(object):
 
         model.solve(solver=GLPK(msg=False, timeLimit=self.timeout))
         # assert LpStatus[model.status] == 'Optimal'
-        if LpStatus[model.status] != 'Optimal':
-            print("optimal_routing_mlu_critical_pairs: ", LpStatus[model.status])
 
         obj_r = r.value()
         solution = {}
@@ -439,7 +434,7 @@ class CFRRL_Game(Game):
     #         asolution[k, e1, e2] = v
     #     return asolution
 
-    def evaluate(self, tm_idx, actions=None, ecmp=True, eval_delay=False, p_optimal_solution=None):
+    def evaluate(self, tm_idx, actions=None, ecmp=True, eval_delay=False):
         if ecmp:
             ecmp_mlu, ecmp_delay = self.eval_ecmp_traffic_distribution(tm_idx, eval_delay=eval_delay)
 
@@ -456,7 +451,7 @@ class CFRRL_Game(Game):
         _, topk_solution = self.optimal_routing_mlu_critical_pairs(tm_idx, topk)
         topk_mlu, topk_delay = self.eval_critical_flow_and_ecmp(tm_idx, topk, topk_solution, eval_delay=eval_delay)
 
-        _, optimal_solution = self.optimal_routing_mlu(tm_idx, p_solution=p_optimal_solution)
+        _, optimal_solution = self.optimal_routing_mlu(tm_idx)
         optimal_mlu, optimal_mlu_delay = self.eval_optimal_routing_mlu(tm_idx, optimal_solution, eval_delay=eval_delay)
 
         norm_mlu = optimal_mlu / mlu
