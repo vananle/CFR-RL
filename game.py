@@ -52,8 +52,13 @@ class Game(object):
             for h in range(self.tm_history):
                 if normalization:
                     tm_max_element = np.max(self.traffic_matrices[tm_idx - h])
-                    self.normalized_traffic_matrices[tm_idx - idx_offset, :, :, h] = self.traffic_matrices[
-                                                                                         tm_idx - h] / tm_max_element  # [Valid_tms, Node, Node, History]
+                    if tm_max_element > 0:
+                        self.normalized_traffic_matrices[tm_idx - idx_offset, :, :, h] = self.traffic_matrices[
+                                                                                             tm_idx - h] / tm_max_element  # [Valid_tms, Node, Node, History]
+                    else:
+                        self.normalized_traffic_matrices[tm_idx - idx_offset, :, :, h] = self.traffic_matrices[
+                            tm_idx - h]  # [Valid_tms, Node, Node, History]
+
                 else:
                     self.normalized_traffic_matrices[tm_idx - idx_offset, :, :, h] = self.traffic_matrices[
                         tm_idx - h]  # [Valid_tms, Node, Node, History]

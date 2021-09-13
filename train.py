@@ -162,6 +162,8 @@ def agent(agent_id, config, game, tm_subset, model_weights_queue, experience_que
         elif config.method == 'pure_policy':
             policy = network.policy_predict(np.expand_dims(state, 0)).numpy()[0]
         assert np.count_nonzero(policy) >= game.max_moves, (policy, state)
+        if np.any(np.isnan(policy)):
+            raise RuntimeError
         actions = random_state.choice(game.action_dim, game.max_moves, p=policy, replace=False)
         for a in actions:
             a_batch.append(a)
