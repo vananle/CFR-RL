@@ -139,7 +139,7 @@ class Game(object):
 
         return eval_max_utilization, delay
 
-    def optimal_routing_mlu(self, tm_idx):
+    def optimal_routing_mlu(self, tm_idx, p_solution=None):
         tm = self.traffic_matrices[tm_idx]
         demands = {}
         for i in range(self.num_pairs):
@@ -184,14 +184,17 @@ class Game(object):
         model.solve(solver=GLPK(msg=False, timeLimit=self.timeout))
         # model.solve(solver=COIN_CMD(msg=False, timeLimit=self.timeout))
         # assert LpStatus[model.status] == 'Optimal'
-
-        while LpStatus[model.status] != 'Optimal':
-            model.solve(solver=GLPK(msg=False, timeLimit=60))
-
         obj_r = r.value()
-        solution = {}
-        for k in ratio:
-            solution[k] = ratio[k].value()
+
+        if LpStatus[model.status] != 'Optimal':
+            if p_solution is not None:
+                solution = p_solution
+            else:
+                model.solve(solver=GLPK(msg=False, timeLimit=1000))
+        else:
+            solution = {}
+            for k in ratio:
+                solution[k] = ratio[k].value()
 
         return obj_r, solution
 
