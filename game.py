@@ -188,6 +188,7 @@ class Game(object):
 
         model.solve(solver=GLPK(msg=False, timeLimit=100))
         assert LpStatus[model.status] == 'Optimal'
+
         obj_r = r.value()
         solution = {}
         for k in ratio:
@@ -268,7 +269,7 @@ class Game(object):
         model += r + OBJ_EPSILON * lpSum([link_load[ei] for ei in self.links])
 
         model.solve(solver=GLPK(msg=False, timeLimit=self.timeout))
-        # assert LpStatus[model.status] == 'Optimal'
+        assert LpStatus[model.status] == 'Optimal'
 
         obj_r = r.value()
         solution = {}
@@ -348,7 +349,7 @@ class Game(object):
         model += lpSum(f[ei] for ei in self.links)
 
         model.solve(solver=GLPK(msg=False, timeLimit=self.timeout))
-        # assert LpStatus[model.status] == 'Optimal'
+        assert LpStatus[model.status] == 'Optimal'
 
         solution = {}
         for k in ratio:
