@@ -3,7 +3,7 @@ from __future__ import division
 from __future__ import print_function
 
 import numpy as np
-from pulp import LpProblem, LpStatus, lpSum, LpVariable, GLPK, COIN_CMD
+from pulp import LpProblem, LpStatus, lpSum, LpVariable, GLPK, COIN_CMD, LpMinimize
 
 OBJ_EPSILON = 1e-12
 
@@ -146,9 +146,9 @@ class Game(object):
             s, d = self.pair_idx_to_sd[i]
             demands[i] = tm[s][d]
 
-        model = LpProblem(name="routing")
+        model = LpProblem(name="routing", sense=LpMinimize)
 
-        ratio = LpVariable.dicts(name="ratio", indexs=self.pair_links, lowBound=0, upBound=1, cat='Integer')
+        ratio = LpVariable.dicts(name="ratio", indexs=self.pair_links, cat='Binary')
 
         link_load = LpVariable.dicts(name="link_load", indexs=self.links)
 
@@ -184,8 +184,10 @@ class Game(object):
         model.solve(solver=GLPK(msg=False, timeLimit=self.timeout))
         # model.solve(solver=COIN_CMD(msg=False, timeLimit=self.timeout))
         # assert LpStatus[model.status] == 'Optimal'
-        if LpStatus[model.status] != 'Optimal':
-            print('optimal_routing_mlu: ', LpStatus[model.status])
+
+        while LpStatus[model.status] != 'Optimal':
+            model.solve(solver=GLPK(msg=False, timeLimit=60))
+
         obj_r = r.value()
         solution = {}
         for k in ratio:
