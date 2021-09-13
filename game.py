@@ -123,7 +123,7 @@ class Game(object):
 
         # print(cf_potential)
         assert len(cf_potential) >= self.max_moves, \
-            ("cf_potential(%d) < max_move(%d), please increse critical_links(%d)" % (
+            ("cf_potential(%d) < max_move(%d), please increase critical_links(%d)" % (
                 cf_potential, self.max_moves, critical_links))
 
         return self.get_topK_flows(tm_idx, cf_potential)
