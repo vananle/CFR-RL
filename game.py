@@ -3,7 +3,7 @@ from __future__ import division
 from __future__ import print_function
 
 import numpy as np
-from pulp import LpProblem, LpStatus, lpSum, LpVariable, GLPK
+from pulp import LpProblem, LpStatus, lpSum, LpVariable, GLPK, COIN_CMD
 
 OBJ_EPSILON = 1e-12
 
@@ -182,8 +182,10 @@ class Game(object):
         model += r + OBJ_EPSILON * lpSum([link_load[e] for e in self.links])
 
         model.solve(solver=GLPK(msg=False, timeLimit=self.timeout))
+        # model.solve(solver=COIN_CMD(msg=False, timeLimit=self.timeout))
         # assert LpStatus[model.status] == 'Optimal'
-
+        if LpStatus[model.status] != 'Optimal':
+            print('optimal_routing_mlu: ', LpStatus[model.status])
         obj_r = r.value()
         solution = {}
         for k in ratio:
@@ -265,6 +267,8 @@ class Game(object):
 
         model.solve(solver=GLPK(msg=False, timeLimit=self.timeout))
         # assert LpStatus[model.status] == 'Optimal'
+        if LpStatus[model.status] != 'Optimal':
+            print("optimal_routing_mlu_critical_pairs: ", LpStatus[model.status])
 
         obj_r = r.value()
         solution = {}
