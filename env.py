@@ -98,11 +98,10 @@ class Traffic(object):
     def __init__(self, config, num_nodes, data_dir='../data/', is_training=False):
         self.num_nodes = num_nodes
 
-        splitted_path = os.path.join(data_dir, 'splitted_data/')
-        if not os.path.exists(splitted_path):
+        splitted_data_fname = os.path.join(data_dir, 'splitted_data/{}.mat'.format(config.dataset))
+        if not os.path.isfile(splitted_data_fname):
             self.split_data_from_mat(data_dir=data_dir, dataset=config.dataset)
 
-        splitted_data_fname = splitted_path + config.dataset + '.mat'
         print('Load data from ', splitted_data_fname)
         data = loadmat(splitted_data_fname)
         if is_training:
