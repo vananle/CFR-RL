@@ -181,23 +181,16 @@ class Game(object):
 
         model += r + OBJ_EPSILON * lpSum([link_load[e] for e in self.links])
 
-        model.solve(solver=GLPK(msg=False, timeLimit=self.timeout))
+        model.solve(solver=GLPK(msg=False, timeLimit=100))
         # model.solve(solver=COIN_CMD(msg=False, timeLimit=self.timeout))
         # assert LpStatus[model.status] == 'Optimal'
         obj_r = r.value()
+        solution = {}
+        for k in ratio:
+            solution[k] = ratio[k].value()
 
         if LpStatus[model.status] != 'Optimal':
-            if p_solution is not None:
-                solution = p_solution
-            else:
-                model.solve(solver=GLPK(msg=False, timeLimit=10000))
-                solution = {}
-                for k in ratio:
-                    solution[k] = ratio[k].value()
-        else:
-            solution = {}
-            for k in ratio:
-                solution[k] = ratio[k].value()
+            solution = p_solution
 
         return obj_r, solution
 
