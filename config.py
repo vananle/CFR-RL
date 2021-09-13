@@ -32,7 +32,8 @@ class Config(NetworkConfig):
     model_type = 'Conv'
 
     data_dir = '../data_cfr/'
-    dataset = 'abilene_tm'
+    dataset = 'geant_tm'
+    # dataset = 'abilene_tm'
     topology_file = dataset
     traffic_file = 'train'
     test_traffic_file = 'test'
