@@ -5,7 +5,7 @@ import tensorflow as tf
 from absl import app
 from absl import flags
 
-from config import get_config
+from config import get_config, get_args
 from env import Environment
 from game import CFRRL_Game
 from model import Network
@@ -74,6 +74,9 @@ def main(_):
     tf.get_logger().setLevel('INFO')
 
     config = get_config(FLAGS) or FLAGS
+    args = get_args()
+    config.dataset = args.dataset
+
     env = Environment(config, is_training=False)
     game = CFRRL_Game(config, env)
     network = Network(config, game.state_dims, game.action_dim, game.max_moves)

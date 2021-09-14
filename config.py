@@ -64,3 +64,5 @@ def get_args():
     parser.add_argument('--dataset', type=str, default='abilene_tm',
                         choices=['abilene_tm', 'geant_tm', 'brain_tm', 'renater_tm', 'surfnet_tm', 'uninett_tm'],
                         help='Dataset, (default abilene_tm)')
+    args = parser.parse_args()
+    return args
