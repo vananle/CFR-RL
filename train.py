@@ -217,9 +217,6 @@ def main(_):
     # tf.debugging.set_log_device_placement(True)
 
     config = get_config(FLAGS) or FLAGS
-    args = get_args()
-    config.dataset = args.dataset
-
     env = Environment(config, is_training=True)
     game = CFRRL_Game(config, env)
     model_weights_queues = []
