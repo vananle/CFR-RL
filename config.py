@@ -1,3 +1,6 @@
+import argparse
+
+
 class NetworkConfig(object):
     scale = 100
 
@@ -54,3 +57,10 @@ def get_config(FLAGS):
             setattr(config, k, v.value)
 
     return config
+
+
+def get_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--dataset', type=str, default='abilene_tm',
+                        choices=['abilene_tm', 'geant_tm', 'brain_tm', 'renater_tm', 'surfnet_tm', 'uninett_tm'],
+                        help='Dataset, (default abilene_tm)')
