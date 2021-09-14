@@ -3,7 +3,7 @@ from __future__ import division
 from __future__ import print_function
 
 import numpy as np
-from pulp import LpProblem, LpStatus, lpSum, LpVariable, GLPK, COIN_CMD, LpMinimize
+from pulp import LpProblem, LpStatus, lpSum, LpVariable, GLPK, LpMinimize
 
 OBJ_EPSILON = 1e-12
 
@@ -151,7 +151,7 @@ class Game(object):
             s, d = self.pair_idx_to_sd[i]
             demands[i] = tm[s][d]
 
-        model = LpProblem(name="routing", sense=LpMinimize)
+        model = LpProblem(name="routing")
 
         ratio = LpVariable.dicts(name="ratio", indexs=self.pair_links, lowBound=0, upBound=1)
 
