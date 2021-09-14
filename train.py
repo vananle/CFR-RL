@@ -8,7 +8,7 @@ from absl import app
 from absl import flags
 from tqdm import tqdm
 
-from config import get_config, get_args
+from config import get_config
 from env import Environment
 from game import CFRRL_Game
 from model import Network

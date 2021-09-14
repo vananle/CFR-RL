@@ -5,7 +5,7 @@ import tensorflow as tf
 from absl import app
 from absl import flags
 
-from config import get_config, get_args
+from config import get_config
 from env import Environment
 from game import CFRRL_Game
 from model import Network
