@@ -16,29 +16,34 @@ flags.DEFINE_boolean('eval_delay', False, 'evaluate delay or not')
 
 
 def count_rc_cfr_rl(solutions, crit_pairs, lp_links):
-    rc = []
-    for i in range(len(solutions) - 1):
-        count = 0
-        solution_0 = solutions[i][0]
-        solution_1 = solutions[i + 1][0]
-        pairs_0 = crit_pairs[i]
-        pairs_1 = crit_pairs[i + 1]
+    method = ['cfr-rl', 'cfr-topk', 'topk']
+    num_rc = {}
+    for m in range(len(method)):
+        rc = []
+        for i in range(len(solutions) - 1):
+            count = 0
+            solution_0 = solutions[i][m]
+            solution_1 = solutions[i + 1][m]
+            pairs_0 = crit_pairs[i][m]
+            pairs_1 = crit_pairs[i + 1][m]
 
-        intersec_flows = np.intersect1d(pairs_0, pairs_1)
+            intersec_flows = np.intersect1d(pairs_0, pairs_1)
 
-        # counting the number of flows added to the list
-        new_cflows = np.setdiff1d(pairs_1, intersec_flows)
-        count += new_cflows.shape[0]
+            # counting the number of flows added to the list
+            new_cflows = np.setdiff1d(pairs_1, intersec_flows)
+            count += new_cflows.shape[0]
 
-        # counting the number of flows that have path changed
-        for flow_idx in intersec_flows:
-            for e in lp_links:
-                if solution_1[flow_idx, e[0], e[1]] - solution_0[flow_idx, e[0], e[1]] != 0.0:
-                    count += 1
-                    break
+            # counting the number of flows that have path changed
+            for flow_idx in intersec_flows:
+                for e in lp_links:
+                    if solution_1[flow_idx, e[0], e[1]] - solution_0[flow_idx, e[0], e[1]] != 0.0:
+                        count += 1
+                        break
 
-        rc.append(count)
-    return np.asarray(rc)
+            rc.append(count)
+        rc = np.asarray(rc)
+        num_rc[method[m]] = rc
+    return num_rc
 
 
 def sim(config, network, game):
@@ -62,10 +67,12 @@ def sim(config, network, game):
         crit_pairs.append(crit_pair)
 
     mlus = np.asarray(mlus)
-    rc = count_rc_cfr_rl(solutions, crit_pairs=crit_pairs, lp_links=game.lp_links)
+    num_rc = count_rc_cfr_rl(solutions, crit_pairs=crit_pairs, lp_links=game.lp_links)
     print('----------------------------------- OVERALL RESULTS -------------------------------------------------------')
     print('MLU   Critical MLU   Topk MLU      Optimal MLU\n', np.mean(mlus, axis=0))
-    print('RC CFR_RL: Total: {}  -  Avg: {}'.format(np.sum(rc), np.mean(rc)))
+    print('RC CFR_RL  : Total: {}  -  Avg: {}'.format(np.sum(num_rc['cfr-rl']), np.mean(num_rc['cfr-rl'])))
+    print('RC CFR_TOPK: Total: {}  -  Avg: {}'.format(np.sum(num_rc['cfr-topk']), np.mean(num_rc['cfr-topk'])))
+    print('RC TOPK    : Total: {}  -  Avg: {}'.format(np.sum(num_rc['topk']), np.mean(num_rc['topk'])))
 
 
 def main(_):
