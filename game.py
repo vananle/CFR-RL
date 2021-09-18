@@ -488,4 +488,4 @@ class CFRRL_Game(Game):
         print(line[:-2])
 
         return [mlu, crit_mlu, topk_mlu, optimal_mlu], \
-               [solution, crit_topk_solution, topk_solution, optimal_solution], [actions, crit_topk, topk]
+               [solution, crit_topk_solution, topk_solution, optimal_solution], [actions, crit_topk, topk, ]
