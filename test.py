@@ -112,14 +112,16 @@ def sim(config, network, game):
     print('RC TOPK    : Total: {}  -  Avg: {}'.format(np.sum(num_rc['topk']), np.mean(num_rc['topk'])))
     print('RC OPTIMAL : Total: {}  -  Avg: {}'.format(np.sum(num_rc['optimal']), np.mean(num_rc['optimal'])))
 
-    np.save('{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "cfr-rl"), mlus[0])
-    np.save('{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "cfr-topk"), mlus[1])
-    np.save('{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "topk"), mlus[2])
-    np.save('{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "optimal"), mlus[3])
+    np.save('./results/{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "cfr-rl"), mlus[0])
+    np.save('./results/{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "cfr-topk"), mlus[1])
+    np.save('./results/{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "topk"), mlus[2])
+    np.save('./results/{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "optimal"), mlus[3])
 
-    np.save('{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "cfr-rl"), mlus[0])
-    np.save('{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "cfr-topk"), mlus[1])
-    np.save('{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "topk"), mlus[2])
+    np.save('./results/{}_{}_{}_rc'.format(config.dataset, config.max_moves, "cfr-rl"), num_rc['cfr-rl'])
+    np.save('./results/{}_{}_{}_rc'.format(config.dataset, config.max_moves, "cfr-topk"), num_rc['cfr-topk'])
+    np.save('./results/{}_{}_{}_rc'.format(config.dataset, config.max_moves, "topk"), num_rc['topk'])
+    np.save('./results/{}_{}_{}_rc'.format(config.dataset, config.max_moves, "optimal"), num_rc['optimal'])
+
 
 def main(_):
     # Using cpu for testing

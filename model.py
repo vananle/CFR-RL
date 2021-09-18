@@ -12,12 +12,13 @@ class Network():
         self.input_dims = input_dims
         self.action_dim = action_dim
         self.max_moves = max_moves
-        self.model_name = config.version+'-'\
-                            +config.project_name+'_'\
-                            +config.method+'_'\
-                            +config.model_type+'_'\
-                            +config.topology_file+'_'\
-                            +config.traffic_file
+        self.model_name = config.version + '-' \
+                          + config.project_name + '_' \
+                          + config.method + '_' \
+                          + config.model_type + '_' \
+                          + config.topology_file + '_' \
+                          + config.traffic_file + '_' \
+                          + config.max_moves
 
         if config.method == 'actor_critic':
             self.create_actor_critic_model(config)
