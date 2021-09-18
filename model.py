@@ -18,7 +18,7 @@ class Network():
                           + config.model_type + '_' \
                           + config.topology_file + '_' \
                           + config.traffic_file + '_' \
-                          + config.max_moves
+                          + str(config.max_moves)
 
         if config.method == 'actor_critic':
             self.create_actor_critic_model(config)
