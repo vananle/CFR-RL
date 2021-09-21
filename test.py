@@ -88,8 +88,6 @@ def sim(config, network, game):
     solutions = []
     crit_pairs = []
     for tm_idx in game.tm_indexes:
-        if tm_idx == 10:
-            break
         state = game.get_state(tm_idx)
         if config.method == 'actor_critic':
             policy = network.actor_predict(np.expand_dims(state, 0)).numpy()[0]
