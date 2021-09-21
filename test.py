@@ -91,7 +91,6 @@ def sim(config, network, game):
         if tm_idx % 50 == 0 and tm_idx != 0:
             print('t       opt_mlu             norm_mlu              mlu          norm_crit_mlu         crit_mlu     '
                   '       norm_topk_mlu          topk_mlu         norm_ecmp_mlu           ecmp_mlu')
-            break
         state = game.get_state(tm_idx)
         if config.method == 'actor_critic':
             policy = network.actor_predict(np.expand_dims(state, 0)).numpy()[0]
