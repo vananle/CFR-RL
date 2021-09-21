@@ -88,6 +88,8 @@ def sim(config, network, game):
     solutions = []
     crit_pairs = []
     for tm_idx in game.tm_indexes:
+        if tm_idx == 10:
+            break
         state = game.get_state(tm_idx)
         if config.method == 'actor_critic':
             policy = network.actor_predict(np.expand_dims(state, 0)).numpy()[0]
@@ -109,11 +111,11 @@ def sim(config, network, game):
     print('RC TOPK    : Total: {}  -  Avg: {}'.format(np.sum(num_rc['topk']), np.mean(num_rc['topk'])))
     print('RC OPTIMAL : Total: {}  -  Avg: {}'.format(np.sum(num_rc['optimal']), np.mean(num_rc['optimal'])))
 
-    np.save('./results/{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "cfr-rl"), mlus[0])
-    np.save('./results/{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "cfr-topk"), mlus[1])
-    np.save('./results/{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "topk"), mlus[2])
-    np.save('./results/{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "optimal"), mlus[3])
-    np.save('./results/{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "ecmp"), mlus[4])
+    np.save('./results/{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "cfr-rl"), mlus[:, 0])
+    np.save('./results/{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "cfr-topk"), mlus[:, 1])
+    np.save('./results/{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "topk"), mlus[:, 2])
+    np.save('./results/{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "optimal"), mlus[:, 3])
+    np.save('./results/{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "ecmp"), mlus[:, 4])
 
     np.save('./results/{}_{}_{}_rc'.format(config.dataset, config.max_moves, "cfr-rl"), num_rc['cfr-rl'])
     np.save('./results/{}_{}_{}_rc'.format(config.dataset, config.max_moves, "cfr-topk"), num_rc['cfr-topk'])
