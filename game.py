@@ -439,8 +439,7 @@ class CFRRL_Game(Game):
     #     return asolution
 
     def evaluate(self, tm_idx, actions=None, ecmp=True, eval_delay=False):
-        if ecmp:
-            ecmp_mlu, ecmp_delay = self.eval_ecmp_traffic_distribution(tm_idx, eval_delay=eval_delay)
+        ecmp_mlu, ecmp_delay = self.eval_ecmp_traffic_distribution(tm_idx, eval_delay=eval_delay)
 
         _, solution = self.optimal_routing_mlu_critical_pairs(tm_idx, actions)
         mlu, delay = self.eval_critical_flow_and_ecmp(tm_idx, actions, solution, eval_delay=eval_delay)
@@ -467,9 +466,8 @@ class CFRRL_Game(Game):
         norm_topk_mlu = optimal_mlu / topk_mlu
         line += str(norm_topk_mlu) + ', ' + str(topk_mlu) + ', '
 
-        if ecmp:
-            norm_ecmp_mlu = optimal_mlu / ecmp_mlu
-            line += str(norm_ecmp_mlu) + ', ' + str(ecmp_mlu) + ', '
+        # norm_ecmp_mlu = optimal_mlu / ecmp_mlu
+        # line += str(norm_ecmp_mlu) + ', ' + str(ecmp_mlu) + ', '
 
         if eval_delay:
             solution = self.optimal_routing_delay(tm_idx)
@@ -487,5 +485,5 @@ class CFRRL_Game(Game):
 
         print(line[:-2])
 
-        return [mlu, crit_mlu, topk_mlu, optimal_mlu], \
-               [solution, crit_topk_solution, topk_solution, optimal_solution], [actions, crit_topk, topk, ]
+        return [mlu, crit_mlu, topk_mlu, optimal_mlu, ecmp], \
+               [solution, crit_topk_solution, topk_solution, optimal_solution], [actions, crit_topk, topk]

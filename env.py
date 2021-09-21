@@ -136,12 +136,10 @@ class Traffic(object):
             train_size = 4 * 7 * 288  # 4 weeks
             val_size = 288 * 7  # 1 week
             test_size = 288 * 7 * 2  # 2 weeks
-
         elif 'geant' in dataset:
             train_size = 96 * 7 * 4 * 2  # 2 months
             val_size = 96 * 7 * 2  # 2 weeks
             test_size = 96 * 7 * 4  # 1 month
-
         elif 'brain' in dataset:
             train_size = 1440 * 3  # 3 days
             val_size = 1440  # 1 day
