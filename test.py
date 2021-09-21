@@ -103,7 +103,7 @@ def sim(config, network, game):
     mlus = np.asarray(mlus)
     num_rc = count_rc(solutions, crit_pairs=crit_pairs, lp_links=game.lp_links, num_pairs=game.num_pairs)
     print('----------------------------------- OVERALL RESULTS -------------------------------------------------------')
-    print('MLU   Critical MLU   Topk MLU      Optimal MLU\n', np.mean(mlus, axis=0))
+    print('CFR_RL   CFR_TOPK    TOPK     OPTIMAL    ECMP\n', np.mean(mlus, axis=0))
     print('RC CFR_RL  : Total: {}  -  Avg: {}'.format(np.sum(num_rc['cfr-rl']), np.mean(num_rc['cfr-rl'])))
     print('RC CFR_TOPK: Total: {}  -  Avg: {}'.format(np.sum(num_rc['cfr-topk']), np.mean(num_rc['cfr-topk'])))
     print('RC TOPK    : Total: {}  -  Avg: {}'.format(np.sum(num_rc['topk']), np.mean(num_rc['topk'])))
