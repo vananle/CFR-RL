@@ -113,6 +113,7 @@ def sim(config, network, game):
     np.save('./results/{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "cfr-topk"), mlus[1])
     np.save('./results/{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "topk"), mlus[2])
     np.save('./results/{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "optimal"), mlus[3])
+    np.save('./results/{}_{}_{}_mlu'.format(config.dataset, config.max_moves, "ecmp"), mlus[4])
 
     np.save('./results/{}_{}_{}_rc'.format(config.dataset, config.max_moves, "cfr-rl"), num_rc['cfr-rl'])
     np.save('./results/{}_{}_{}_rc'.format(config.dataset, config.max_moves, "cfr-topk"), num_rc['cfr-topk'])
