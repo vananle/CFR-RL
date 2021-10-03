@@ -6,9 +6,8 @@ import os
 from scipy.io import loadmat, savemat
 import networkx as nx
 import numpy as np
-
-
 # import matplotlib.pyplot as plt
+
 
 class Topology(object):
     def __init__(self, config, data_dir='./data/'):

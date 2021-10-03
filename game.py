@@ -222,7 +222,7 @@ class Game(object):
         pairs = critical_pairs
 
         demands = {}
-        background_link_loads = np.zeros((self.num_links))
+        background_link_loads = np.zeros(self.num_links)
         for i in range(self.num_pairs):
             s, d = self.pair_idx_to_sd[i]
             # background link load
@@ -443,7 +443,6 @@ class CFRRL_Game(Game):
 
         _, solution = self.optimal_routing_mlu_critical_pairs(tm_idx, actions)
         mlu, delay = self.eval_critical_flow_and_ecmp(tm_idx, actions, solution, eval_delay=eval_delay)
-        # solution = self.dic2array(solution)
 
         crit_topk = self.get_critical_topK_flows(tm_idx)
         _, crit_topk_solution = self.optimal_routing_mlu_critical_pairs(tm_idx, crit_topk)
